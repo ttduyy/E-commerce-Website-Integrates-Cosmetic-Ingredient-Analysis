@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                'full-header',
+                                                ~{:: #css},
+                                                ~{:: #js},
+                                                ~{:: #main-content}
+                                               )}">
+
+<head>
+    <title>Trang chủ</title>
+
+    <th:block id="css">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/components/products.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/components/lastest-news.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/components/index/index-newsletter.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/components/index/index-category.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/components/index/product-showcase.css}"/>
+        <style>
+            a {
+                overflow: hidden;
+            }
+            img.card-img-top:hover {
+                transform: scale(1.2);
+                transition: 0.25s;
+            }
+
+            .risk-level-1 { background-color: green;
+                color: #FFFFFF;}
+            .risk-level-2 { background-color: yellowgreen;
+                color: #FFFFFF;}
+            .risk-level-3 { background-color: yellow;
+                color: #FFFFFF;}
+            .risk-level-4 { background-color: orange;
+                color: #FFFFFF;}
+            .risk-level-5 { background-color: red;
+                color: #FFFFFF;}
+        </style>
+    </th:block>
+</head>
+<body>
+<main id="main-content">
+    <div class="product-content-wrapper container">
+        <div class="title col-12">
+            <h2 class="h2">ĐỘ LÀNH TÍNH - THÀNH PHẦN</h2>
+        </div>
+        <div class="list-group">
+            <th:block th:each="ingredient : ${ingredient_list}">
+                <a href="#" class="list-group-item list-group-item-action" th:href="@{/thanh-phan/{id}(id=${ingredient.id})}">
+                <span class="badge mr-2" th:text="${ingredient.riskLevel} "
+                      th:classappend="${'risk-level-' + ingredient.riskLevel}">
+                </span>
+                <span th:text="${ingredient.name}"></span>
+                </a>
+            </th:block>
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+<th:block id="js">
+    <script type="text/javascript" th:src="@{/script/index.js}"></script>
+    <script type="text/javascript" th:src="@{/script/lastest-news.js}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script th:inline="javascript">
+        const addCart = async (id) => {
+            try {
+                if (isLogined == true) {
+                    await axios.post(`/cart/add/${id}`);
+                    toastr.success("Đã thêm vào giỏ hàng");
+                } else {
+                    toastr.warning("Vui lòng đăng nhập");
+                    setTimeout(function () {
+                        $('#signInSignUp').modal('show');
+                    }, 1000);
+                }
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+        }
+
+    </script>
+</th:block>
+</body>
+</html>
+
+
+

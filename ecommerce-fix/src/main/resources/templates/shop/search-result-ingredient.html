@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                'short-header',
+                                                ~{:: #css},
+                                                ~{:: #js},
+                                                ~{:: #main-content}
+                                               )}">
+
+<head>
+  <title>Sản phẩm</title>
+
+  <th:block id="css">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/pagination/simplePagination.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/components/header.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/components/products.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/components/shop/filter-bar.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/components/shop/product-showing.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/components/shop/filter-bar-small.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/except-home-page.css}"/>
+    <style>
+      a {
+        overflow: hidden;
+      }
+
+      img.card-img-top:hover {
+        transform: scale(1.2);
+        transition: 0.25s;
+      }
+
+      .item:hover {
+        color: #33beff;
+      }
+
+      .risk-level-1 { background-color: green;
+        color: #FFFFFF;}
+      .risk-level-2 { background-color: yellowgreen;
+        color: #FFFFFF;}
+      .risk-level-3 { background-color: yellow;
+        color: #FFFFFF;}
+      .risk-level-4 { background-color: orange;
+        color: #FFFFFF;}
+      .risk-level-5 { background-color: red;
+        color: #FFFFFF;}
+
+      table {
+        width: 100%;
+        border-collapse: revert;
+        /*border-radius: 10%;*/
+        /*border: 1px solid #ddd;*/
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+
+      .risk-level-low {
+        background-color: lightgreen;
+      }
+
+      .risk-level-medium {
+        background-color: yellow;
+      }
+
+      .risk-level-high {
+        background-color: orange;
+      }
+
+      .risk-level-very-high {
+        background-color: red;
+      }
+    </style>
+  </th:block>
+</head>
+
+<body>
+<main id="main-content">
+  <div class="container">
+    <!-- Add your content here -->
+    <table>
+      <thead>
+      <tr>
+        <th>Risk Level</th>
+        <th>Name</th>
+        <th>Uses</th>
+        <th>Skin Compatibility</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:if="${data == null or data.isEmpty()}">
+        <td colspan="4">No data found</td>
+      </tr>
+      <tr th:each="ingredient : ${data} ">
+        <td>
+          <a th:href="@{/thanh-phan/{id}(id=${ingredient.id})}">
+            <span class="badge mr-2" th:text="${ingredient.riskLevel}" th:classappend="${'risk-level-' + ingredient.riskLevel}"></span>
+          </a>
+        </td>
+        <td>
+          <a th:href="@{/thanh-phan/{id}(id=${ingredient.id})}" th:text="${ingredient.name}"></a>
+        </td>
+        <td th:text="${ingredient.uses}"></td>
+        <td th:text="${ingredient.skinCompatibility}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+</body>
+
+</html>

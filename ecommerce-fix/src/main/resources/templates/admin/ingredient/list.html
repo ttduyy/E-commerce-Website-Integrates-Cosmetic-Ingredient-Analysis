@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css},
+                                                ~{:: #js},
+                                                ~{:: #main-content}
+                                               )}">
+
+<head>
+    <title>Danh sách thành phần</title>
+
+    <th:block id="css">
+    </th:block>
+</head>
+<body>
+<main id="main-content">
+    <!-- Breadcrumb -->
+    <div class="row">
+        <div class="col-12">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item active">Danh sách thành phần</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <button class="btn btn-success" data-toggle="modal" data-target="#modal-add-new-ingredient">
+            <span class="fa fa-plus"></span>
+            <span>Thêm thành phần</span>
+        </button>
+        <div class="clear"></div>
+    </div>
+
+    <!-- Main content -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-outline">
+                <div class="card-body pad">
+                    <div class="table-responsive">
+                        <!-- Table data -->
+                        <table class="table table-striped table-bordered table-hover text-center">
+                            <thead>
+                            <tr class="heading">
+                                <th>
+                                    Tên thành phần
+                                </th>
+                                <th>
+                                    Chi tiết
+                                </th>
+                                <th>
+                                    Mức độ rủi ro
+                                </th>
+                                <th>
+                                    Cách sử dụng
+                                </th>
+                                <th>
+                                    Hướng dẫn
+                                </th>
+                                <th>
+                                    Tương thích với da
+                                </th>
+                                <th>
+                                    Tùy chọn
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="list-ingredient">
+                            <th:block th:each="ingredient : ${ingredients}">
+                                <tr>
+                                    <td class="ingredient-name" th:data-id="${ingredient.id}" th:text="${ingredient.name}"></td>
+                                    <td class="ingredient-detail" th:data-id="${ingredient.id}" th:text="${ingredient.detail}"></td>
+                                    <td class="ingredient-risk-level" th:data-id="${ingredient.id}" th:text="${ingredient.riskLevel}"></td>
+                                    <td class="ingredient-uses" th:data-id="${ingredient.id}" th:text="${ingredient.uses}"></td>
+                                    <td class="ingredient-guide" th:data-id="${ingredient.id}" th:text="${ingredient.guide}"></td>
+                                    <td class="ingredient-skin-compatibility" th:data-id="${ingredient.id}" th:text="${ingredient.skinCompatibility}"></td>
+                                    <td>
+                                        <button class="btn btn-outline-warning mr-2" onclick="updateIngredient(this)" th:data-id="${ingredient.id}"><i class="fas fa-edit">Chỉnh sửa</i></button>
+                                        <button class="btn btn-outline-danger" onclick="deleteIngredient(this)" th:data-id="${ingredient.id}"><i class="fas fa-trash-alt">Xóa</i></button>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add new ingredient-->
+    <div class="modal fade" id="modal-add-new-ingredient" tabindex="-1" role="dialog" aria-labelledby="modalAddNewIngredient" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm thành phần mới</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new-ingredient-name">Tên</label>
+                        <input type="text" class="form-control" id="new-ingredient-name" placeholder="Nhập tên thành phần mới">
+                        <span class="invalid-feedback" id="invalid-feedback-new-ingredient">Tên thành phần là bắt buộc</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-ingredient-detail">Chi tiết</label>
+                        <textarea class="form-control" id="new-ingredient-detail" placeholder="Nhập chi tiết của thành phần mới"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-ingredient-risk-level">Mức độ rủi ro</label>
+                        <input type="number" class="form-control" id="new-ingredient-risk-level" placeholder="Nhập mức độ rủi ro của thành phần mới">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-ingredient-uses">Cách sử dụng</label>
+                        <input type="text" class="form-control" id="new-ingredient-uses" placeholder="Nhập cách sử dụng của thành phần mới">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-ingredient-guide">Hướng dẫn</label>
+                        <textarea class="form-control" id="new-ingredient-guide" placeholder="Nhập hướng dẫn sử dụng của thành phần mới"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-ingredient-skin-compatibility">Tính tương thích với da</label>
+                        <input type="text" class="form-control" id="new-ingredient-skin-compatibility" placeholder="Nhập tính tương thích với da của thành phần mới">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary btn-add-new-ingredient">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal update category-->
+    <div class="modal fade" id="modal-update-ingredient" tabindex="-1" role="dialog" aria-labelledby="modalUpdateIngredient" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cập nhật thành phần</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label >Tên</label>
+                        <input type="text" hidden id="update-ingredient-id">
+                        <input type="text" class="form-control" id="update-ingredient-name" placeholder="Nhập tên thành phần">
+                        <span class="invalid-feedback" id="invalid-feedback-update-ingredient">Tên thành phần là bắt buộc</span>
+                    </div>
+                    <div class="form-group">
+                        <label >Chi tiết</label>
+                        <textarea class="form-control" id="update-ingredient-detail" placeholder="Nhập chi tiết của thành phần"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label >Mức độ rủi ro</label>
+                        <input type="number" class="form-control" id="update-ingredient-risk-level" placeholder="Nhập mức độ rủi ro của thành phần">
+                    </div>
+                    <div class="form-group">
+                        <label >Cách sử dụng</label>
+                        <input type="text" class="form-control" id="update-ingredient-uses" placeholder="Nhập cách sử dụng của thành phần">
+                    </div>
+                    <div class="form-group">
+                        <label >Hướng dẫn</label>
+                        <textarea class="form-control" id="update-ingredient-guide" placeholder="Nhập hướng dẫn sử dụng của thành phần"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label >Tính tương thích với da</label>
+                        <input type="text" class="form-control" id="update-ingredient-skin-compatibility" placeholder="Nhập tính tương thích với da của thành phần">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary btn-update-ingredient">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal delete category-->
+    <!-- Modal delete ingredient-->
+    <div class="modal fade" id="modal-delete-ingredient" tabindex="-1" role="dialog" aria-labelledby="modalDeleteIngredient" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa thành phần</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="delete-ingredient-id">
+                    <span>Bạn chắc chắn muốn xóa thành phần này?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger btn-delete-ingredient">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+<th:block id="js">
+    <script th:inline="javascript">
+        $('.btn-add-new-ingredient').click(function() {
+            let newIngredientName = $('#new-ingredient-name').val();
+            if (newIngredientName.length === 0) {
+                $('#invalid-feedback-new-ingredient').show();
+                return;
+            }
+            let newIngredientDetail = $('#new-ingredient-detail').val();
+            let newIngredientRiskLevel = $('#new-ingredient-risk-level').val();
+            let newIngredientUses = $('#new-ingredient-uses').val();
+            let newIngredientGuide = $('#new-ingredient-guide').val();
+            let newIngredientSkinCompatibility = $('#new-ingredient-skin-compatibility').val();
+
+            req = {
+                name: newIngredientName,
+                detail: newIngredientDetail,
+                riskLevel: newIngredientRiskLevel,
+                uses: newIngredientUses,
+                guide: newIngredientGuide,
+                skinCompatibility: newIngredientSkinCompatibility
+            };
+            var myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/api/admin/ingredients',
+                type: 'POST',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    toastr.success("Tạo thành phần mới thành công");
+                    // Thêm mới thành phần vào bảng
+                    $('.list-ingredient').append(`
+                        <tr>
+                            <td class="ingredient-name" data-id="${data.id}">${data.name}</td>
+                            <td class="ingredient-detail">${data.detail}</td>
+                            <td class="ingredient-risk-level">${data.riskLevel}</td>
+                            <td class="ingredient-uses">${data.uses}</td>
+                            <td class="ingredient-guide">${data.guide}</td>
+                            <td class="ingredient-skin-compatibility">${data.skinCompatibility}</td>
+                            <td>
+                                <button class="btn btn-outline-warning mr-2" onclick="updateIngredient(this)" data-id="${data.id}"><i class="fas fa-edit">Chỉnh sửa</i></button>
+                                <button class="btn btn-outline-danger" onclick="deleteIngredient(this)" data-id="${data.id}"><i class="fas fa-trash-alt">Xóa</i></button>
+                            </td>
+                        </tr>
+                    `);
+                    // Đóng modal và xóa dữ liệu đã nhập
+                    $('.modal').modal('hide');
+                    $('#new-ingredient-name').val('');
+                    $('#new-ingredient-detail').val('');
+                    $('#new-ingredient-risk-level').val('');
+                    $('#new-ingredient-uses').val('');
+                    $('#new-ingredient-guide').val('');
+                    $('#new-ingredient-skin-compatibility').val('');
+                },
+                error: function(data) {
+                    toastr.warning(data.responseJSON.message);
+                },
+                complete: function() {
+                    $('#invalid-feedback-new-ingredient').hide();
+                }
+            });
+        })
+
+
+
+        // Function to update ingredient
+        function updateIngredient(btn) {
+            let id = $(btn).data('id');
+            let name = $('.ingredient-name[data-id='+id+']').text();
+            let detail = $('.ingredient-detail[data-id='+id+']').text();
+            let riskLevelText = $('.ingredient-risk-level[data-id='+id+']').text(); // Lấy chuỗi chứa số
+            let riskLevel = parseInt(riskLevelText); // Chuyển đổi chuỗi thành số nguyên
+            let guide = $('.ingredient-guide[data-id='+id+']').text();
+            let uses = $('.ingredient-uses[data-id='+id+']').text();
+            let skinCompatibility = $('.ingredient-skin-compatibility[data-id='+id+']').text();
+
+            $('#update-ingredient-name').val(name);
+            $('#update-ingredient-id').val(id);
+            $('#update-ingredient-detail').val(detail);
+            $('#update-ingredient-guide').val(guide);
+            $('#update-ingredient-risk-level').val(riskLevel);
+            $('#update-ingredient-uses').val(uses);
+            $('#update-ingredient-skin-compatibility').val(skinCompatibility);
+            $('#modal-update-ingredient').modal('show');
+        }
+
+        $('.btn-update-ingredient').click(function() {
+            let nameI = $('#update-ingredient-name').val().trim().replace(/\s+/g,' ');
+            let idI = $('#update-ingredient-id').val();
+            let detailI = $('#update-ingredient-detail').val();
+            let usesI = $('#update-ingredient-uses').val();
+            let riskI = $('#update-ingredient-risk-level').val();
+            let skinI = $('#update-ingredient-skin-compatibility').val();
+            let guideI = $('#update-ingredient-guide').val();
+            if (nameI.length === 0 && idI.length===0 && detailI.length===0 && usesI.length===0 &&
+                riskI.length === 0 && skinI.length===0 && guideI.length===0) {
+                $('#invalid-feedback-update-ingredient').show();
+                return;
+            }
+            req = {
+                name: nameI,
+                detail: detailI,
+                riskLevel: riskI,
+                uses: usesI,
+                guide: guideI,
+                skinCompatibility: skinI
+            }
+            var myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/api/admin/ingredients/'+idI, // Sửa đường dẫn của API
+                type: 'PUT',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    toastr.success("Cập nhật thành công");
+                    $('.ingredient-name[data-id='+idI+']').text(nameI); // Cập nhật tên thành phần
+                    $('.modal').modal('hide');
+                    $('#update-ingredient-name').val('');
+                    $('#update-ingredient-id').val('');
+                    $('#update-ingredient-detail').val('');
+                    $('#update-ingredient-uses').val('');
+                    $('#update-ingredient-risk-level').val('');
+                    $('#update-ingredient-skin-compatibility').val('');
+                    $('#update-ingredient-guide').val('');
+                },
+                error: function(data) {
+                    toastr.warning(data.responseJSON.message);
+                    location.reload();
+                },
+                complete: function() {
+                    $('#invalid-feedback-update-ingredient').hide();
+                    location.reload();
+                }
+            });
+        })
+
+        function deleteIngredient(btn) {
+            let id = $(btn).data('id');
+            console.log(id);
+            $('#delete-ingredient-id').val(id);
+            $('#modal-delete-ingredient').modal('show');
+        }
+
+        $('.btn-delete-ingredient').click(function() {
+            let idIngredient = $('#delete-ingredient-id').val();
+            console.log(idIngredient);
+            $.ajax({
+                url: '/api/admin/ingredients/'+idIngredient,
+                type: 'DELETE',
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    toastr.success("Xóa thành công");
+                    $('.ingredient-name[data-id='+idIngredient+']').parent().remove();
+                    $('.modal').modal('hide');
+                    $('#delete-ingredient-id').val('');
+                },
+                error: function(data) {
+                    toastr.warning(data.responseJSON.message);
+                }
+            });
+        })
+    </script>
+</th:block>
+</body>
+</html>
+
+
