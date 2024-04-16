@@ -21,5 +21,5 @@ The website has the ability to analyze the risk of each ingredient in cosmetics
 
 **The program is made by:**
 - Nguyễn Cao Minh
-- Trần Bảo Duy
+- Trần Bảo Duy (Leader)
 - Trần Hoàng Vũ
